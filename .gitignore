@@ -13,3 +13,8 @@ docs/
 # python venv
 venv
 .python-version
+
+# dataset
+Adaptiope.zip
+Adaptiope
+adaptiope_small
