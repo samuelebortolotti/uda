@@ -13,10 +13,12 @@ def dann_optimizer_scheduler(
     and the classifiers is multiplied by 10, since they don't start pre-trained.
 
     Args:
+
     - optimizer [torch.optim.Optimizer]: optimizer
     - p [np.double]: p parameter
 
     Return:
+
     - lr np.double
     """
     lr = 0.01 / (1.0 + 10 * p) ** 0.75

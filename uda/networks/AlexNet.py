@@ -66,10 +66,15 @@ class AlexNet(nn.Module):
         # automatic pretrained model
         if pretrained:
             # url of the AlexNet weights
-            from torchvision.models.alexnet import model_urls
+            from torchvision.models import alexnet as anet
+
+            if pretrained:
+                backbone = anet(weights="AlexNet_Weights.IMAGENET1K_V1")
+            else:
+                backbone = anet()
 
             # load the weights
-            state_dict = load_state_dict_from_url(model_urls["alexnet"], progress=True)
+            state_dict = backbone.state_dict()
             # remove the last layer weights
             state_dict["classifier.6.weight"] = self.state_dict()["classifier.6.weight"]
             state_dict["classifier.6.bias"] = self.state_dict()["classifier.6.bias"]

@@ -13,12 +13,14 @@ def get_native_alexnet_optimizer(
     architecture
 
     Args:
+
     - net [nn.Module]: network architecture
     - lr [float]: learning rate
     - wd [float]: weight decay
     - momentum [float]: momentum
 
     Returns:
+
     - optimizer [torch.optim.Optimizer]
     """
     return torch.optim.SGD(net.parameters(), lr=lr, weight_decay=wd, momentum=momentum)
@@ -34,12 +36,14 @@ def get_ddc_alexnet_optimizer(
     Maximizing for Domain Invariance paper
 
     Args:
+
     - net [nn.Module]: network architecture
     - lr [float]: learning rate
     - wd [float]: weight decay
     - momentum [float]: momentum
 
     Returns:
+
     - optimizer [torch.optim.Optimizer]
     """
     return torch.optim.SGD(
@@ -65,12 +69,14 @@ def get_dann_alexnet_optimizer(
     the Domain-Adversarial Training of Neural Networks paper
 
     Args:
+
     - net [nn.Module]: network architecture
     - lr [float]: learning rate
     - wd [float]: weight decay
     - momentum [float]: momentum
 
     Returns:
+
     - optimizer nn.Optimizer
     """
     return torch.optim.SGD(
@@ -99,12 +105,14 @@ def get_native_resnet_optimizer(
     architecture
 
     Args:
+
     - net [nn.Module]: network architecture
     - lr [float]: learning rate
     - wd [float]: weight decay
     - momentum [float]: momentum
 
     Returns:
+
     - optimizer [torch.optim.Optimizer]
     """
     return torch.optim.SGD(net.parameters(), lr=lr, weight_decay=wd, momentum=momentum)
@@ -120,12 +128,14 @@ def get_ddc_resnet_optimizer(
     Maximizing for Domain Invariance paper
 
     Args:
+
     - net [nn.Module]: network architecture
     - lr [float]: learning rate
     - wd [float]: weight decay
     - momentum [float]: momentum
 
     Returns:
+
     - optimizer [torch.optim.Optimizer]
     """
     return torch.optim.SGD(
@@ -149,12 +159,14 @@ def get_dann_resnet_optimizer(
     the Domain-Adversarial Training of Neural Networks paper
 
     Args:
+
     - net [nn.Module]: network architecture
     - lr [float]: learning rate
     - wd [float]: weight decay
     - momentum [float]: momentum
 
     Returns:
+
     - optimizer nn.Optimizer
     """
     print("RESNET DANN OPTIMIZER")
@@ -179,12 +191,14 @@ def get_rotation_resnet_optimizer(
     the Domain-Adversarial Training of Neural Networks paper
 
     Args:
+
     - net [nn.Module]: network architecture
     - lr [float]: learning rate
     - wd [float]: weight decay
     - momentum [float]: momentum
 
     Returns:
+
     - optimizer nn.Optimizer
     """
     print("RESNET ROTATION OPTIMIZER")
@@ -210,12 +224,14 @@ def get_dsn_resnet_optimizer(
     the Domain-Adversarial Training of Neural Networks paper
 
     Args:
+
     - net [nn.Module]: network architecture
     - lr [float]: learning rate
     - wd [float]: weight decay
     - momentum [float]: momentum
 
     Returns:
+
     - optimizer nn.Optimiser
     """
     return torch.optim.SGD(

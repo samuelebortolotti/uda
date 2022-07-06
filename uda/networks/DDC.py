@@ -105,11 +105,16 @@ class DDCAlexNet(nn.Module):
 
         # whether to load a pretrained model
         if pretrained:
-            from torchvision.models.alexnet import model_urls
+            # url of the AlexNet weights
+            from torchvision.models import alexnet as anet
 
-            pretrained_params = load_state_dict_from_url(
-                model_urls["alexnet"], progress=True
-            )
+            if pretrained:
+                backbone = anet(weights="AlexNet_Weights.IMAGENET1K_V1")
+            else:
+                backbone = anet()
+
+            # load the weights
+            pretrained_params = backbone.state_dict()
 
             # load weights from alexnet base net
             current_params = self.state_dict()
@@ -208,7 +213,11 @@ class DDCResNet18(nn.Module):
         the neural network or not in the forward step.
         """
         # Take the resNet18 module and discard the last layer
-        features = nn.ModuleList(resnet18(pretrained=pretrained).children())[:-1]
+        if pretrained:
+            backbone = resnet18(weights="ResNet18_Weights.IMAGENET1K_V1")
+        else:
+            backbone = resnet18()
+        features = nn.ModuleList(backbone.children())[:-1]
 
         # Use it as a feature extractor
         self.features = nn.Sequential(*features)

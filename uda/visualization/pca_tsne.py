@@ -31,12 +31,14 @@ def gen_predictions_targets(
     [link]: https://github.com/2-Chae/PyTorch-tSNE/blob/main/main.py
 
     Args:
+
     - net [nn.Module]: network architecture
     - dataloader [torch.utils.data.DataLoader]: dataloader where to compute the features
     - technique [Technique]: technique to employ
     - device [str] = "cuda": where to load the tensors
 
     Returns:
+
     - targets [np.double]: targets
     - outputs [np.double]: features
     """
@@ -90,6 +92,7 @@ def gen_features_source_domain(
     the actual technique which has been chosen.
 
     In this case, each prediction is associated either to:
+
     - 0 in the case of source set samples
     - 1 in the case of target set samples
 
@@ -100,14 +103,15 @@ def gen_features_source_domain(
     [link]: https://github.com/2-Chae/PyTorch-tSNE/blob/main/main.py
 
     Args:
+
     - net [nn.Module]: network architecture
-    - source_dataloader [torch.utils.data.DataLoader]: source dataloader where to compute the features
-    associated to
+    - source_dataloader [torch.utils.data.DataLoader]: source dataloader where to compute the features associated to
     - target_dataloader [torch.utils.data.DataLoader]: target dataloader where to compute the features
     - technique [Technique]: technique to employ
     - device [str] = "cuda": where to load the tensors
 
     Returns:
+
     - targets [np.double]: targets
     - outputs [np.double]: features
     """
@@ -207,12 +211,12 @@ def feature_visualizer(
     [link]: https://towardsdatascience.com/visualising-high-dimensional-datasets-using-pca-and-t-sne-in-python-8ef87e7915b
 
     Args:
+
     - title [str]: network architecture
     - targets [np.double]: features to feed to the dimensionality reduction algorithm
     - outputs [np.double]: labels associated to the features
     - n_classes [int]: number of classes
-    - n_c [float] = 0.95: number of PCA components, in this case it is the amount of
-    variance to preserve
+    - n_c [float] = 0.95: number of PCA components, in this case it is the amount of variance to preserve
     - legend [List[str]]: legend to display
     """
 

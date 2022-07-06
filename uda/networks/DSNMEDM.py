@@ -3,6 +3,7 @@ import torch
 from torchvision.models import resnet18
 from typing import Tuple
 from .DSN import ResNet18Dec, Flatten, ReconstructionCode, ReconstructionSheme
+import copy
 
 
 class DSNMEDM(nn.Module):
@@ -54,21 +55,27 @@ class DSNMEDM(nn.Module):
         """
         super(DSNMEDM, self).__init__()
 
+        # Take the resNet18 module and discard the last layer
+        if pretrained:
+            backbone = resnet18(weights="ResNet18_Weights.IMAGENET1K_V1")
+        else:
+            backbone = resnet18()
+
         # In the original tensorfrow code: default_encoder
         self.source_encoder = nn.Sequential(
-            *nn.ModuleList(resnet18(pretrained=pretrained).children())[:-1],
+            *nn.ModuleList(backbone.children())[:-1],
             Flatten(),
         )
 
         # identical to the source_encoder
         self.target_encoder = nn.Sequential(
-            *nn.ModuleList(resnet18(pretrained=pretrained).children())[:-1],
+            *nn.ModuleList(copy.deepcopy(backbone).children())[:-1],
             Flatten(),
         )
 
         # indentical to the source_encoder except for the dropout
         self.shared_encoder = nn.Sequential(
-            *nn.ModuleList(resnet18(pretrained=pretrained).children())[:-1],
+            *nn.ModuleList(copy.deepcopy(backbone).children())[:-1],
             Flatten(),
         )
 

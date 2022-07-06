@@ -18,12 +18,13 @@ def get_mean_std(
     [link]: https://github.com/aladdinpersson/Machine-Learning-Collection/blob/master/ML/Pytorch/Basics/pytorch_std_mean.py
 
     Args:
+
     - img_size [Tuple[int, int]]: image shape
     - source_data [str]: path to the source data
     - target_data [str]: path to the target data
 
     Returns:
-      source mean and stdev, target mean and stdev [Tuple[Tuple[float, float], Tuple[float, float]]
+        source mean and stdev, target mean and stdev [Tuple[Tuple[float, float], Tuple[float, float]]
     """
 
     # basic transformations
@@ -52,6 +53,7 @@ def get_mean_std(
         target dataloader
 
         Args:
+
         - loader [torch.utils.data.DataLoader]: dataloader
 
         Returns:
@@ -102,6 +104,7 @@ def load_dataloaders(
     according to what has been specified by the arguments
 
     Default:
+
     - batch_size [int] = 128
     - test_batch_size [int] = 256
     - mean_source [List[float]] = [0.8023, 0.7918, 0.7904]
@@ -111,6 +114,7 @@ def load_dataloaders(
     - normalize [bool] = True
 
     Args:
+
     - img_size: Tuple[int, int]: image shape
     - source_data [str]: path to the source daa
     - target_data [str]: path to the target data
@@ -122,9 +126,9 @@ def load_dataloaders(
     - stdev_target [List[float]]
     - additional_transformations = None
     - normalize [bool] = True
+
     Returns:
-      dataloaders [Dict[str, torch.utils.data.DataLoader]]: a dictionary containing the dataloaders,
-      for training [source, target, source+target], validation [source] and test [target]
+        dataloaders [Dict[str, torch.utils.data.DataLoader]]: a dictionary containing the dataloaders, for training [source, target, source+target], validation [source] and test [target]
     """
 
     # Use mean and stdev recommended by Pytorch for ResNet and AlexNet
@@ -142,8 +146,10 @@ def load_dataloaders(
         percentage value.
 
         Args:
+
         - dataset [torchvision.datasets.Subset]: datset
         - perc [float]: split percentage must be a value between 0 and 1
+
         Returns:
           [training, validation] Tuple[torchvision.datasets.ImageFolder]: respectively the training set,
            which will have (perc*100)% of samples and validation set, which will have (100-(100*perc))% samples

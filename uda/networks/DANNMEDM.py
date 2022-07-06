@@ -36,7 +36,11 @@ class DANNMEDM(nn.Module):
         super(DANNMEDM, self).__init__()
 
         # Take the resNet18 module and discard the last layer
-        features = nn.ModuleList(resnet18(pretrained=pretrained).children())[:-1]
+        if pretrained:
+            backbone = resnet18(weights="ResNet18_Weights.IMAGENET1K_V1")
+        else:
+            backbone = resnet18()
+        features = nn.ModuleList(backbone.children())[:-1]
 
         # set the ResNet18 backbone as feature extractor
         self.features = nn.Sequential(*features)

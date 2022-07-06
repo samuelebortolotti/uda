@@ -13,12 +13,15 @@ def configure_subparsers(subparsers: Subparser) -> None:
     """
     parser = subparsers.add_parser("visualize", help="Dataset visualization subparser")
     parser.add_argument(
-        "--label", "-L", type=int, choices=range(0, 20), help="which label to display"
-    )
-    parser.add_argument(
         "dataset_source", type=str, help="location of the source dataset"
     )
     parser.add_argument("dataset_dest", type=str, help="location of the target dataset")
+    parser.add_argument(
+        "label", type=int, choices=range(0, 20), help="which label to display"
+    )
+    parser.add_argument(
+        "--batch-size", "-bs", type=int, default=128, help="batch size of the datasets"
+    )
     # set the main function to run when blob is called from the command line
     parser.set_defaults(func=main)
 
@@ -39,10 +42,12 @@ def visualize_train_datasets(
     desired label to be displayed.
 
     Default:
+
     - rows [int] = 3
     - cols [int] = 3
 
     Args:
+
     - source_train [torch.utils.data.DataLoader]
     - target_train [torch.utils.data.DataLoader]
     - image_label [int]: image label index
@@ -136,7 +141,7 @@ def main(args: Namespace) -> None:
         (224, 224),  # img_size
         args.dataset_source,
         args.dataset_dest,
-        batch_size=32,
+        batch_size=args.batch_size,
         additional_transformations=[],
     )
 

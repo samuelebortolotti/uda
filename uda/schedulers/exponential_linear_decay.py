@@ -12,12 +12,14 @@ def exp_lr_scheduler(
     Exponential learning rate schedule
 
     Args:
+
     - optimizer [torch.optim.Optimizer]: oprimizers
     - step [float]: step of the exponential learning rate schedule
     - init_lr [float]: initial learning rate
     - step_decay_weight [int]: step decay
 
     Returns:
+
     - optimizer [torch.optim.Optimizer]: optimizer with updated schedule
     """
 

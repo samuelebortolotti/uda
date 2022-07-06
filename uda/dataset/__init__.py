@@ -1,5 +1,5 @@
 """Dataset module
-It contains all the classes and methods to deal with the dataset loading together with the preparation of the 
+It contains all the classes and methods to deal with the dataset loading together with the preparation of the
 Adaptiope dataset
 """
 

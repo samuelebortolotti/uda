@@ -13,6 +13,7 @@ def tr_image(img: torch.Tensor) -> torch.Tensor:
     in Tensor board
 
     Args:
+
     - img [torch.Tensor]: image
 
     Returns:
@@ -35,7 +36,9 @@ def test_step(
     r"""
     Function which performs one test step, it is able to adapt to
     different architectures according to the `technique` passed.
+
     Namely:
+
     - Source-Only (baseline): learns only from the source domain
     - Upper-Bound: learns both from the source and the target domain
     - Deep Domain Confusion: https://arxiv.org/pdf/1412.3474.pdf
@@ -45,17 +48,18 @@ def test_step(
     - Domain Separation Networks with Entropy Minimization vs. Diversity Maximization
 
     Args:
+
     - net [nn.Module]: network architecture
     - source_validation_loader [torch.utils.data.DataLoader]: source validation data loader
     - cost_function [nn.CrossEntropyLoss]: cost function
     - epoch [int]: current epoch
     - writer [torch.utils.tensorboard.SummaryWriter]: summary writer
     - title [str]: title for the `tqdm` loop
-    - technique [Technique]: which training technique to employ, of course the neural
-    network needs to be adapted according to the chosen technique
+    - technique [Technique]: which training technique to employ, of course the neural network needs to be adapted according to the chosen technique
     - device [str] = "cuda": device on which to perform the training
 
     Returns:
+
     - batch loss, batch accuracy [Tuple[float, float]]
     """
     samples = 0.0

@@ -10,3 +10,4 @@ wandb>=0.12.20
 gdown>=4.5.1
 tensorboard>=2.9.1
 scikit-learn>=1.1.1
+colorcet>=3.0.0

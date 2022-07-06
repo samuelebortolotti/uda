@@ -9,12 +9,13 @@ from argparse import Namespace
 import matplotlib
 import uda.dataset.prepare_data as data
 import uda.dataset.visualize_dataset as viz_data
+from uda.dataset import classes
 from uda import Technique
 import torch
 import tqdm
 import torch.nn as nn
 from torch.utils.tensorboard import SummaryWriter
-from typing import List
+from typing import Any, List
 import sys
 import os
 from uda.networks import *
@@ -26,6 +27,7 @@ from uda.utils.utils import (
     log_values,
     load_best_weights,
     resume_training,
+    get_lr,
 )
 from uda.train import training_step
 from uda.test import test_step
@@ -100,14 +102,14 @@ def configure_subparsers(subparsers: Subparser) -> None:
     )
     parser.add_argument("source_data", type=str, help="source domain dataset")
     parser.add_argument("target_data", type=str, help="target domain dataset")
-    parser.add_argument("exp-name", type=str, help="name of the experiment")
+    parser.add_argument("exp_name", type=str, help="name of the experiment")
     parser.add_argument(
-        "num-classes", type=int, default=20, help="number of classes [default 20]"
+        "num_classes", type=int, default=20, help="number of classes [default 20]"
     )
     parser.add_argument("pretrained", type=bool, default=True, help="pretrained model")
     parser.add_argument("epochs", type=int, help="number of training epochs")
     parser.add_argument(
-        "net-name", type=str, choices=["alexnet", "resnet"], help="name of the network"
+        "net_name", type=str, choices=["alexnet", "resnet"], help="backbone network"
     )
     parser.add_argument(
         "--device",
@@ -178,6 +180,13 @@ def configure_subparsers(subparsers: Subparser) -> None:
     parser.add_argument(
         "--entity" "-w", type=str, default="deep-learning-project", help="wandb entity"
     )
+    parser.add_argument(
+        "--classes",
+        "-C",
+        nargs="+",
+        default=classes,
+        help="classes provided in the dataset, by default they are those employed for the project",
+    )
     # set the main function to run when blob is called from the command line
     parser.set_defaults(func=experiment)
 
@@ -207,12 +216,15 @@ def unsupervised_domain_adaptation_main(
     reverse_domains: bool = False,
     dry: bool = False,
     additional_transformations: List[nn.Module] = [],
+    wandb: bool = False,
+    **kwargs: Any,
 ) -> None:
     r"""
     Function which performs both training and test step, it is able to adapt to
     different architectures according to the `technique` passed.
 
     Namely:
+
     - Source-Only (baseline): learns only from the source domain
     - Upper-Bound: learns both from the source and the target domain
     - Deep Domain Confusion: https://arxiv.org/pdf/1412.3474.pdf
@@ -222,6 +234,7 @@ def unsupervised_domain_adaptation_main(
     - Domain Separation Networks with Entropy Minimization vs. Diversity Maximization
 
     Defaults:
+
     - resume [bool] = False: by default do not resume last training
     - device [str] = "cuda": move tensors on GPU
     - batch_size [int] = 128
@@ -240,11 +253,12 @@ def unsupervised_domain_adaptation_main(
     - reverse_domains [bool] = False: by default the domain are in the order specified
     - dry [bool] = False: by default save weights
     - additional_transformations [List[nn.Module]] = []
+    - wandb [bool] = False
 
     Args:
+
     - net [nn.Module]: network architecture
-    - exp_name [str]: name of the experiment, basically where to save the logs of the
-    SummaryWriter
+    - exp_name [str]: name of the experiment, basically where to save the logs of the SummaryWriter
     - technique [Technique]: technique to employ
     - resume [bool] = False: whether to resume a checkpoint
     - device [str] = "cuda": where to load the tensors
@@ -264,6 +278,8 @@ def unsupervised_domain_adaptation_main(
     - dry [bool] = False: whether to do not save weights
     - reverse_domains [bool] = False: whether to swap or not the domains (source and target)
     - additional_transformations [List[nn.Module]] = []: additional transformation for the source domain dataloader
+    - wandb [bool] = False: whether to log values on wandb
+    - \*\*kwargs [Any]: additional key-value arguments
     """
     # create a logger for the experiment
     log_directory = "runs/exp_{}".format(exp_name)
@@ -409,7 +425,7 @@ def unsupervised_domain_adaptation_main(
     current_step = 0
 
     # log on wandb if and only if the module is loaded
-    if "wandb" in sys.modules:
+    if wandb:
         wandb.watch(net)
 
     # for each epoch, train the network and then compute evaluation results
@@ -503,7 +519,7 @@ def unsupervised_domain_adaptation_main(
         writer.add_scalar("Learning rate", get_lr(optimizer), e)
 
         # log on wandb if and only if the module is loaded
-        if "wandb" in sys.modules:
+        if wandb:
             wandb.log(
                 {
                     "train/train_loss": train_loss,
@@ -569,7 +585,7 @@ def unsupervised_domain_adaptation_main(
     log_values(writer, epochs, test_loss, test_accuracy, "Test")
 
     # log on wandb if and only if the module is loaded
-    if "wandb" not in sys.modules:
+    if wandb:
         wandb.log(
             {
                 "train/train_loss": train_loss,
@@ -629,6 +645,20 @@ def experiment(args: Namespace) -> None:
     Args:
       args (Namespace): command line arguments
     """
+
+    # mapping number to technique
+    try:
+        args.technique = Technique(args.technique)
+    except:
+        print("No valid technique selected")
+        exit(1)
+
+    print("\n### Experiment ###")
+    print("> Parameters:")
+    for p, v in zip(args.__dict__.keys(), args.__dict__.values()):
+        print("\t{}: {}".format(p, v))
+    print("\n")
+
     # set wandb if needed
     if args.wandb:
         # import wandb
@@ -656,21 +686,21 @@ def experiment(args: Namespace) -> None:
             if args.net_name == "alexnet"
             else ResNet18(num_classes=args.num_classes, pretrained=args.pretrained)
         )
-    elif args.Technique == Technique.DDC:
+    elif args.technique == Technique.DDC:
         # Deep Domain Confusion
         net = (
             DDCAlexNet(num_classes=args.num_classes, pretrained=args.pretrained)
             if args.net_name == "alexnet"
             else DDCResNet18(num_classes=args.num_classes, pretrained=args.pretrained)
         )
-    elif args.Technique == Technique.DANN:
+    elif args.technique == Technique.DANN:
         # Domain-Adversarial Neural Network
         net = (
             DANNAlexNet(num_classes=args.num_classes, pretrained=args.pretrained)
             if args.net_name == "alexnet"
             else DANNResNet18(num_classes=args.num_classes, pretrained=args.pretrained)
         )
-    elif args.Technique == Technique.DSN:
+    elif args.technique == Technique.DSN:
         # Domain Separation Network
         if args.net_name == "alexnet":
             net = AlexNetDSN(num_classes=args.num_classes, pretrained=args.pretrained)
@@ -684,16 +714,16 @@ def experiment(args: Namespace) -> None:
                 pretrained=args.pretrained,
                 decoder_location=decoder_location,
             )
-    elif args.Technique == Technique.ROTATION:
+    elif args.technique == Technique.ROTATION:
         # Rotation Loss
         net = RotationArch(num_classes=args.num_classes)
-    elif args.Technique == Technique.MEDM:
+    elif args.technique == Technique.MEDM:
         # Entropy Minimization vs. Diversity Maximization
         net = MEDM(num_classes=args.num_classes, pretrained=args.pretrained)
-    elif args.Technique == Technique.DANN_MEDM:
+    elif args.technique == Technique.DANN_MEDM:
         # DANN with Entropy Minimization vs. Diversity Maximization
         net = DANNMEDM(num_classes=args.num_classes, pretrained=args.pretrained)
-    elif args.Technique == Technique.DSN_MEDM:
+    elif args.technique == Technique.DSN_MEDM:
         # DSN with MEDM
         net = DSNMEDM(num_classes=args.num_classes, pretrained=args.pretrained)
     else:
@@ -721,6 +751,7 @@ def experiment(args: Namespace) -> None:
         if not args.reverse_domains
         else dataloaders["full_source"],
         technique=args.technique,
+        device=args.device,
     )
 
     feature_visualizer(
@@ -747,28 +778,7 @@ def experiment(args: Namespace) -> None:
         targets,
         outputs,
         20,
-        legend=[
-            "backpack",
-            "bookcase",
-            "car jack",
-            "comb",
-            "crown",
-            "file cabinet",
-            "flat iron",
-            "game controller",
-            "glasses",
-            "helicopter",
-            "ice skates",
-            "letter tray",
-            "monitor",
-            "mug",
-            "network switch",
-            "over-ear headphones",
-            "pen",
-            "purse",
-            "stand mixer",
-            "stroller",
-        ],
+        legend=args.classes,
     )
 
     if args.wandb:

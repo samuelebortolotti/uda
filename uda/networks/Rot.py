@@ -17,7 +17,8 @@ class RotationArch(nn.Module):
         super(RotationArch, self).__init__()
 
         # Take the resNet18 module and discard the last layer
-        features = nn.ModuleList(resnet18(pretrained=True).children())[:-1]
+        backbone = resnet18(weights="ResNet18_Weights.IMAGENET1K_V1")
+        features = nn.ModuleList(backbone.children())[:-1]
 
         # Use it as a feature extractor
         self.features = nn.Sequential(*features)

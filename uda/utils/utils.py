@@ -5,6 +5,26 @@ import os
 import numpy as np
 from typing import Tuple, Dict
 
+################### Get Lr  ##################
+
+
+def get_lr(optimizer: torch.optim.Optimizer) -> float:
+    r"""
+    Function which returns the learning rate value
+    used in the optimizer
+
+    Args:
+
+    - optimizer [torch.optim.Optimizer]: optimizer
+
+    Returns:
+
+    - lr [float]: learning rate
+    """
+    for param_group in optimizer.param_groups:
+        return param_group["lr"]
+
+
 ################### Logging ###################
 
 
@@ -19,6 +39,7 @@ def log_images(
     debug sessions.
 
     Args:
+
     - writer [torch.utils.tensorboard.SummaryWriter]: summary writer
     - img [torch.Tensor]: image to log
     - title [str]: title of the log
@@ -46,6 +67,7 @@ def log_values(
     a SummaryWriter
 
     Args:
+
     - writer [torch.utils.tensorboard.SummaryWriter]: summary writer
     - step [int]: current step
     - loss [float]: current loss
@@ -65,6 +87,7 @@ def load_best_weights(net: nn.Module, exp_name: str) -> None:
     looks for the `{exp_name}/best.pth` and loads it
 
     Args:
+
     - net [nn.Module]: network architecture
     - exp_name [str]: folder name
     """
@@ -88,12 +111,15 @@ def resume_training(
     If the resume_training flag is set to true, the function tries to recover, from the
     checkpoint specified, the number of epoch, training and validation parameters.
     If the resume_training flag is set to false, the parameters are set to the default ones
+
     Args:
+
     - model [nn.Module]: network architecture
     - experiment_name [str]: where the weight file is located
     - optimizer [torch.optim.Optimizer]: optimizer
 
     Returns:
+
     - training_params [Dict]: training parameters
     - val_params [Dict]: validation parameters [step, best_loss]
     - start_epoch [int]: start epoch number

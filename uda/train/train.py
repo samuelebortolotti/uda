@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import numpy as np
 from uda.networks.DSN import DiffLoss, SIMSE, ReconstructionCode, ReconstructionSheme
 from uda import Technique
 from typing import Tuple
@@ -37,7 +38,9 @@ def training_step(
     r"""
     Function which performs one training step, it is able to adapt to
     different architectures according to the technique passed.
+
     Namely:
+
     - Source-Only (baseline): learns only from the source domain
     - Upper-Bound: learns both from the source and the target domain
     - Deep Domain Confusion: https://arxiv.org/pdf/1412.3474.pdf
@@ -47,14 +50,14 @@ def training_step(
     - Domain Separation Networks with Entropy Minimization vs. Diversity Maximization
 
     Args:
+
     - net [nn.Module]: network architecture
     - source_training_loader [torch.utils.data.DataLoader]: source training data loader
     - target_training_loader torch.utils.data.DataLoader]: target training data loader
     - optimizer [torch.optim.Optimizer]: optimizer
     - scheduler [torch.optim.lr_scheduler.ReduceLROnPlateau]: scheduler
     - cost_function [nn.CrossEntropyLoss]: cost function
-    - cost_function_domain [nn.CrossEntropyLoss]: cost function for the domain classifier
-    in the case of the Domain-Adversarial Neural NetworkNetwork
+    - cost_function_domain [nn.CrossEntropyLoss]: cost function for the domain classifier in the case of the Domain-Adversarial Neural NetworkNetwork
     - epoch [int]: current epoch
     - total_epochs [int]: total number of epoch
     - writer [torch.utils.tensorboard.SummaryWriter]: summary writer
@@ -70,11 +73,11 @@ def training_step(
     - lr_decay_step [int]: learning rate decay step for the scheduler of the DSN
     - step_decay_weight [float]: learning rate weight decay step for the scheduler of the DSN
     - title [str]: title for the tqdm loop
-    - technique [Technique]: which training technique to employ, of course the neural
-    network needs to be adapted according to the chosen technique
+    - technique [Technique]: which training technique to employ, of course the neural network needs to be adapted according to the chosen technique
     - device [str] = "cuda": device on which to perform the training
 
     Returns:
+
     - batch loss, batch accuracy [Tuple[float, float]]
     """
     samples = 0.0

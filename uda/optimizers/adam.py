@@ -7,6 +7,7 @@ def get_adam_optimizer(net: nn.Module, lr: float) -> torch.optim.Optimizer:
     ADAM optimizer
 
     Args:
+
     - net [nn.Module]: network architecture
     - lr [float]: learning rate
 
