@@ -6,7 +6,7 @@ The dataset employed is the [Adaptiope](https://ieeexplore.ieee.org/document/942
 
 To simplify the task the domains considered are `product` and `real world` whose chosen categories are: *backpack, bookcase, car jack, comb, crown, file cabinet, flat iron, game controller, glasses, helicopter, ice skates, letter tray, monitor, mug, network switch, over-ear headphones, pen, purse, stand mixer and stroller*.
 
-Here we link the wandb [experiments' learning curves](https://wandb.ai/deep-learning-project/dl-project) and the [Jupyter notebook]().
+Here we link the wandb [experiments' learning curves](https://wandb.ai/deep-learning-project/dl-project) and the [Jupyter notebook](uda/notebook/notebook.ipynb).
 
 > **Note:** more information can be found in the `report`
 
@@ -470,7 +470,7 @@ make experiment
 
 ## Jupyter Notebook
 
-If you are interested in running all the experiments we have performed at once, we suggest you to execute the jupyter notebook in the repository.
+If you are interested in running all the experiments we have performed at once, we suggest you to execute the jupyter notebook [in the repository](uda/notebook/notebook.ipynb).
 
 Such notebook has been run on [Google Colab](https://colab.research.google.com), therefore you can effortless run it from there as a powerful enough GPU and all the required libraries are provided.
 
