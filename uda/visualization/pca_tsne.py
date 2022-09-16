@@ -314,12 +314,12 @@ def feature_visualizer(
     plt.rc("font", size=MEDIUM_SIZE)  # controls default text sizes
     plt.rc("legend", fontsize=BIGGER_SIZE)  # legend fontsize
     plt.rc("figure", titlesize=BIGGER_SIZE)  # fontsize of the figure title
-
-    # show plots
-    plt.show()
-
+    
     # save plots in a figure
     os.makedirs("plot", exist_ok=True)
     plt.savefig(
         os.path.join("plot/", "{}_pca+tsne.png".format(title)), bbox_inches="tight"
     )
+
+    # show plots
+    plt.show()

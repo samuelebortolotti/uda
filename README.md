@@ -259,7 +259,7 @@ Since Sphinx commands are quite verbose, I suggest you to employ the following c
 
 ```bash
 make doc-layout
-make layout
+make doc
 ```
 
 The generated documentation will be accessible by opening `docs/build/html/index.html` in your browser, or equivalently by running

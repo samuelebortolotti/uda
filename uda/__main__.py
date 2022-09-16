@@ -729,6 +729,8 @@ def experiment(args: Namespace) -> None:
     else:
         print("No technique selected")
         exit(1)
+    
+    net.to(args.device)
 
     # run the experiment
     unsupervised_domain_adaptation_main(net=net, **vars(args))
